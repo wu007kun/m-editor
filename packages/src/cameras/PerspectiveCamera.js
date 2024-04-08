@@ -1,55 +1,50 @@
-import { Camera } from './Camera.js';
-import * as MathUtils from '../math/MathUtils.js';
+import { Camera } from './Camera.js'
+import * as MathUtils from '../math/MathUtils.js'
 
 class PerspectiveCamera extends Camera {
+  constructor (fov = 50, aspect = 1, near = 0.1, far = 2000) {
+    super()
 
-	constructor( fov = 50, aspect = 1, near = 0.1, far = 2000 ) {
+    this.isPerspectiveCamera = true
 
-		super();
+    this.type = 'PerspectiveCamera'
 
-		this.isPerspectiveCamera = true;
+    this.fov = fov
+    this.zoom = 1
 
-		this.type = 'PerspectiveCamera';
+    this.near = near
+    this.far = far
+    this.focus = 10
 
-		this.fov = fov;
-		this.zoom = 1;
+    this.aspect = aspect
+    this.view = null
 
-		this.near = near;
-		this.far = far;
-		this.focus = 10;
+    this.filmGauge = 35	// width of the film (default in millimeters)
+    this.filmOffset = 0	// horizontal film offset (same unit as gauge)
 
-		this.aspect = aspect;
-		this.view = null;
+    this.updateProjectionMatrix()
+  }
 
-		this.filmGauge = 35;	// width of the film (default in millimeters)
-		this.filmOffset = 0;	// horizontal film offset (same unit as gauge)
+  copy (source, recursive) {
+    super.copy(source, recursive)
 
-		this.updateProjectionMatrix();
+    this.fov = source.fov
+    this.zoom = source.zoom
 
-	}
+    this.near = source.near
+    this.far = source.far
+    this.focus = source.focus
 
-	copy( source, recursive ) {
+    this.aspect = source.aspect
+    this.view = source.view === null ? null : Object.assign({}, source.view)
 
-		super.copy( source, recursive );
+    this.filmGauge = source.filmGauge
+    this.filmOffset = source.filmOffset
 
-		this.fov = source.fov;
-		this.zoom = source.zoom;
+    return this
+  }
 
-		this.near = source.near;
-		this.far = source.far;
-		this.focus = source.focus;
-
-		this.aspect = source.aspect;
-		this.view = source.view === null ? null : Object.assign( {}, source.view );
-
-		this.filmGauge = source.filmGauge;
-		this.filmOffset = source.filmOffset;
-
-		return this;
-
-	}
-
-	/**
+  /**
 	 * Sets the FOV by focal length in respect to the current .filmGauge.
 	 *
 	 * The default film gauge is 35, so that the focal length can be specified for
@@ -57,49 +52,39 @@ class PerspectiveCamera extends Camera {
 	 *
 	 * Values for focal length and film gauge must have the same unit.
 	 */
-	setFocalLength( focalLength ) {
+  setFocalLength (focalLength) {
+    /** see {@link http://www.bobatkins.com/photography/technical/field_of_view.html} */
+    const vExtentSlope = 0.5 * this.getFilmHeight() / focalLength
 
-		/** see {@link http://www.bobatkins.com/photography/technical/field_of_view.html} */
-		const vExtentSlope = 0.5 * this.getFilmHeight() / focalLength;
+    this.fov = MathUtils.RAD2DEG * 2 * Math.atan(vExtentSlope)
+    this.updateProjectionMatrix()
+  }
 
-		this.fov = MathUtils.RAD2DEG * 2 * Math.atan( vExtentSlope );
-		this.updateProjectionMatrix();
-
-	}
-
-	/**
+  /**
 	 * Calculates the focal length from the current .fov and .filmGauge.
 	 */
-	getFocalLength() {
+  getFocalLength () {
+    const vExtentSlope = Math.tan(MathUtils.DEG2RAD * 0.5 * this.fov)
 
-		const vExtentSlope = Math.tan( MathUtils.DEG2RAD * 0.5 * this.fov );
+    return 0.5 * this.getFilmHeight() / vExtentSlope
+  }
 
-		return 0.5 * this.getFilmHeight() / vExtentSlope;
+  getEffectiveFOV () {
+    return MathUtils.RAD2DEG * 2 * Math.atan(
+      Math.tan(MathUtils.DEG2RAD * 0.5 * this.fov) / this.zoom)
+  }
 
-	}
+  getFilmWidth () {
+    // film not completely covered in portrait format (aspect < 1)
+    return this.filmGauge * Math.min(this.aspect, 1)
+  }
 
-	getEffectiveFOV() {
+  getFilmHeight () {
+    // film not completely covered in landscape format (aspect > 1)
+    return this.filmGauge / Math.max(this.aspect, 1)
+  }
 
-		return MathUtils.RAD2DEG * 2 * Math.atan(
-			Math.tan( MathUtils.DEG2RAD * 0.5 * this.fov ) / this.zoom );
-
-	}
-
-	getFilmWidth() {
-
-		// film not completely covered in portrait format (aspect < 1)
-		return this.filmGauge * Math.min( this.aspect, 1 );
-
-	}
-
-	getFilmHeight() {
-
-		// film not completely covered in landscape format (aspect > 1)
-		return this.filmGauge / Math.max( this.aspect, 1 );
-
-	}
-
-	/**
+  /**
 	 * Sets an offset in a larger frustum. This is useful for multi-window or
 	 * multi-monitor/multi-machine setups.
 	 *
@@ -134,100 +119,85 @@ class PerspectiveCamera extends Camera {
 	 *
 	 *   Note there is no reason monitors have to be the same size or in a grid.
 	 */
-	setViewOffset( fullWidth, fullHeight, x, y, width, height ) {
+  setViewOffset (fullWidth, fullHeight, x, y, width, height) {
+    this.aspect = fullWidth / fullHeight
 
-		this.aspect = fullWidth / fullHeight;
+    if (this.view === null) {
+      this.view = {
+        enabled: true,
+        fullWidth: 1,
+        fullHeight: 1,
+        offsetX: 0,
+        offsetY: 0,
+        width: 1,
+        height: 1
+      }
+    }
 
-		if ( this.view === null ) {
+    this.view.enabled = true
+    this.view.fullWidth = fullWidth
+    this.view.fullHeight = fullHeight
+    this.view.offsetX = x
+    this.view.offsetY = y
+    this.view.width = width
+    this.view.height = height
 
-			this.view = {
-				enabled: true,
-				fullWidth: 1,
-				fullHeight: 1,
-				offsetX: 0,
-				offsetY: 0,
-				width: 1,
-				height: 1
-			};
+    this.updateProjectionMatrix()
+  }
 
-		}
+  clearViewOffset () {
+    if (this.view !== null) {
+      this.view.enabled = false
+    }
 
-		this.view.enabled = true;
-		this.view.fullWidth = fullWidth;
-		this.view.fullHeight = fullHeight;
-		this.view.offsetX = x;
-		this.view.offsetY = y;
-		this.view.width = width;
-		this.view.height = height;
+    this.updateProjectionMatrix()
+  }
 
-		this.updateProjectionMatrix();
+  updateProjectionMatrix () {
+    const near = this.near
+    let top = near * Math.tan(MathUtils.DEG2RAD * 0.5 * this.fov) / this.zoom
+    let height = 2 * top
+    let width = this.aspect * height
+    let left = -0.5 * width
+    const view = this.view
 
-	}
+    if (this.view !== null && this.view.enabled) {
+      const fullWidth = view.fullWidth
+      const fullHeight = view.fullHeight
 
-	clearViewOffset() {
+      left += view.offsetX * width / fullWidth
+      top -= view.offsetY * height / fullHeight
+      width *= view.width / fullWidth
+      height *= view.height / fullHeight
+    }
 
-		if ( this.view !== null ) {
+    const skew = this.filmOffset
+    if (skew !== 0) left += near * skew / this.getFilmWidth()
 
-			this.view.enabled = false;
+    this.projectionMatrix.makePerspective(left, left + width, top, top - height, near, this.far, this.coordinateSystem)
 
-		}
+    this.projectionMatrixInverse.copy(this.projectionMatrix).invert()
+  }
 
-		this.updateProjectionMatrix();
+  toJSON (meta) {
+    const data = super.toJSON(meta)
 
-	}
+    data.object.fov = this.fov
+    data.object.zoom = this.zoom
 
-	updateProjectionMatrix() {
+    data.object.near = this.near
+    data.object.far = this.far
+    data.object.focus = this.focus
 
-		const near = this.near;
-		let top = near * Math.tan( MathUtils.DEG2RAD * 0.5 * this.fov ) / this.zoom;
-		let height = 2 * top;
-		let width = this.aspect * height;
-		let left = - 0.5 * width;
-		const view = this.view;
+    data.object.aspect = this.aspect
 
-		if ( this.view !== null && this.view.enabled ) {
+    if (this.view !== null) data.object.view = Object.assign({}, this.view)
 
-			const fullWidth = view.fullWidth,
-				fullHeight = view.fullHeight;
+    data.object.filmGauge = this.filmGauge
+    data.object.filmOffset = this.filmOffset
 
-			left += view.offsetX * width / fullWidth;
-			top -= view.offsetY * height / fullHeight;
-			width *= view.width / fullWidth;
-			height *= view.height / fullHeight;
-
-		}
-
-		const skew = this.filmOffset;
-		if ( skew !== 0 ) left += near * skew / this.getFilmWidth();
-
-		this.projectionMatrix.makePerspective( left, left + width, top, top - height, near, this.far, this.coordinateSystem );
-
-		this.projectionMatrixInverse.copy( this.projectionMatrix ).invert();
-
-	}
-
-	toJSON( meta ) {
-
-		const data = super.toJSON( meta );
-
-		data.object.fov = this.fov;
-		data.object.zoom = this.zoom;
-
-		data.object.near = this.near;
-		data.object.far = this.far;
-		data.object.focus = this.focus;
-
-		data.object.aspect = this.aspect;
-
-		if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
-
-		data.object.filmGauge = this.filmGauge;
-		data.object.filmOffset = this.filmOffset;
-
-		return data;
-
-	}
-
+    return data
+  }
 }
 
-export { PerspectiveCamera };
+export { PerspectiveCamera }

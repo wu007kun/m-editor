@@ -87,7 +87,7 @@ function SidebarObject (editor) {
 
   function updateTransformRows (object) {
     if (object.isLight ||
-		   (object.isObject3D && object.userData.targetInverse)) {
+      (object.isObject3D && object.userData.targetInverse)) {
       objectRotationRow.setDisplay('none')
       objectScaleRow.setDisplay('none')
     } else {

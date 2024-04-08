@@ -1,12 +1,14 @@
 <template>
   <div id="sidebar">
     <SidebarScene :editorReady="editorReady"/>
+    <SidebarProperties :editorReady="editorReady"/>
   </div>
 </template>
 <script setup>
 import { onMounted, watch } from 'vue'
 import SidebarScene from './Sidebar/Scene.vue'
-import { SidebarProperties } from '@/editor/Sidebar/Sidebar.Properties.js'
+import SidebarProperties from './Sidebar/Properties.vue'
+// import { SidebarProperties } from '@/editor/Sidebar/Sidebar.Properties.js'
 const props = defineProps({
   editorReady: {
     type: Boolean,
@@ -18,9 +20,9 @@ onMounted(() => {
   watch(() => props.editorReady, ready => {
     if (ready) {
       const editor = window.editor
-      const properties = new SidebarProperties(editor)
-      const container = document.querySelector('#sidebar')
-      container.appendChild(properties.dom)
+      // const properties = new SidebarProperties(editor)
+      // const container = document.querySelector('#sidebar')
+      // container.appendChild(properties.dom)
     }
   }, {
     immediate: true
@@ -36,6 +38,9 @@ onMounted(() => {
   width: 350px;
   background: #161616;
   overflow: auto;
+  padding: 3px;
+  box-sizing: border-box;
+  display: flex; flex-direction: column;
   .Panel {
     padding: 10px;
     border-top: 1px solid #ccc;
