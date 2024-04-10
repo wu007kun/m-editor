@@ -5,21 +5,21 @@
         selected: activeMode === 'translate'
       }"
       @click="setTransformMode('translate')">
-      <img src="@/assets/images/translate.svg" alt="">
+      <img src="@/assets/images/translate.png" alt="">
     </button>
     <button class="Button"
       :class="{
         selected: activeMode === 'rotate'
       }"
       @click="setTransformMode('rotate')">
-      <img src="@/assets/images/rotate.svg" alt="">
+      <img src="@/assets/images/rotate.png" alt="">
     </button>
     <button class="Button"
       :class="{
         selected: activeMode === 'scale'
       }"
       @click="setTransformMode('scale')">
-      <img src="@/assets/images/scale.svg" alt="">
+      <img src="@/assets/images/scale.png" alt="">
     </button>
     <input type="checkbox" class="Checkbox" v-model="spaceCoord" @change="setSpaceCoord">
   </div>

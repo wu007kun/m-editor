@@ -6,26 +6,26 @@
           active: activeTab === 0
         }"
         @click="setActiveTab(0)">
-        <img src="@/assets/images/icon.png" alt="">
+        <img src="@/assets/images/env.png" alt="">
       </div>
       <div class="tab-item"
         :class="{
           active: activeTab === 1
         }"
         @click="setActiveTab(1)">
-        <img src="@/assets/images/icon.png" alt="">
+        <img src="@/assets/images/object.png" alt="">
       </div>
       <div class="tab-item"
         :class="{
           active: activeTab === 2
         }"
         @click="setActiveTab(2)">
-        <img src="@/assets/images/icon.png" alt="">
+        <img src="@/assets/images/material.png" alt="">
       </div>
     </div>
     <div class="tab-panel">
       <div v-show="activeTab === 0" class="panel-content" ref="envRef">
-
+        <Background :editorReady="editorReady"/>
       </div>
       <div v-show="activeTab === 1" class="panel-content" ref="meshRef">
 
@@ -41,7 +41,7 @@ import { onMounted, watch, ref } from 'vue'
 import { SidebarObject } from '@/editor/Sidebar/Sidebar.Object.js'
 import { SidebarGeometry } from '@/editor/Sidebar/Sidebar.Geometry.js'
 import { SidebarMaterial } from '@/editor/Sidebar/Sidebar.Material.js'
-
+import Background from './Background.vue'
 const props = defineProps({
   editorReady: {
     type: Boolean,
@@ -74,11 +74,13 @@ function setActiveTab (n) {
 </script>
 <style lang="less">
 .sidebar-properties {
-  flex-grow: 1;
+  flex-grow: 1; flex-shrink: 1;
+  height: 300px;
   display: flex;
   margin-top: 3px;
   border-radius: 4px;
   background-color: #303030;
+
   .tab-list {
     width: 34px;
     background: #1D1D1D;
@@ -94,6 +96,20 @@ function setActiveTab (n) {
       &.active {
         background: #303030;
       }
+    }
+  }
+  .tab-panel {
+    width: calc(100% - 34px); height: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 3px;
+      background-color: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      width: 3px;
+      border-radius: 3px;
+      background-color: #3D3D3D;
     }
   }
 }

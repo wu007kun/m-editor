@@ -37,7 +37,6 @@ onMounted(() => {
   bottom: 0;
   width: 350px;
   background: #161616;
-  overflow: auto;
   padding: 3px;
   box-sizing: border-box;
   display: flex; flex-direction: column;

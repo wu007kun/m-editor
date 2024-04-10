@@ -191,6 +191,7 @@ function handleListKeyUp (e) {
 <style lang="less">
 
 .Outliner {
+  flex-shrink: 0;
   background-color: #282828;
   border-radius: 4px;
   padding: 0;
@@ -201,6 +202,21 @@ function handleListKeyUp (e) {
   overflow: auto;
   resize: vertical;
   outline: none !important;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: #3D3D3D;
+    border-color: #ff0;
+    border-width: 12px;
+    background-clip: padding-box;
+    &:hover {
+      border-color: #3D3D3D;
+    }
+  }
   .option {
     padding: 4px;
     white-space: nowrap;

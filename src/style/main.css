@@ -283,10 +283,6 @@ select {
   background-color: #fff;
 }
 
-.Panel {
-  color: #888;
-}
-
 /* */
 
 @media all and ( max-width: 600px ) {

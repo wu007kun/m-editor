@@ -1,4 +1,4 @@
-import { UIButton, UIInput, UIPanel, UIRow, UISelect, UIText, UITextArea } from '../libs/ui.js'
+import { UIInput, UIPanel, UIRow, UISelect, UIText } from '../libs/ui.js'
 
 import { SetMaterialCommand } from '../commands/SetMaterialCommand.js'
 import { SetMaterialValueCommand } from '../commands/SetMaterialValueCommand.js'
@@ -45,22 +45,6 @@ function SidebarMaterial (editor) {
   materialClassRow.add(materialClass)
 
   container.add(materialClassRow)
-
-  // uuid
-
-  const materialUUIDRow = new UIRow()
-  const materialUUID = new UIInput().setWidth('102px').setFontSize('12px').setDisabled(true)
-  const materialUUIDRenew = new UIButton(strings.getKey('sidebar/material/new')).setMarginLeft('7px')
-  materialUUIDRenew.onClick(function () {
-    materialUUID.setValue(THREE.MathUtils.generateUUID())
-    update()
-  })
-
-  materialUUIDRow.add(new UIText(strings.getKey('sidebar/material/uuid')).setClass('Label'))
-  materialUUIDRow.add(materialUUID)
-  materialUUIDRow.add(materialUUIDRenew)
-
-  container.add(materialUUIDRow)
 
   // name
 
@@ -379,52 +363,6 @@ function SidebarMaterial (editor) {
   const materialWireframe = new SidebarMaterialBooleanProperty(editor, 'wireframe', strings.getKey('sidebar/material/wireframe'))
   container.add(materialWireframe)
 
-  // userData
-
-  const materialUserDataRow = new UIRow()
-  const materialUserData = new UITextArea().setWidth('150px').setHeight('40px').setFontSize('12px').onChange(update)
-  materialUserData.onKeyUp(function () {
-    try {
-      JSON.parse(materialUserData.getValue())
-
-      materialUserData.dom.classList.add('success')
-      materialUserData.dom.classList.remove('fail')
-    } catch (error) {
-      materialUserData.dom.classList.remove('success')
-      materialUserData.dom.classList.add('fail')
-    }
-  })
-
-  materialUserDataRow.add(new UIText(strings.getKey('sidebar/material/userdata')).setClass('Label'))
-  materialUserDataRow.add(materialUserData)
-
-  container.add(materialUserDataRow)
-
-  // Export JSON
-
-  const exportJson = new UIButton(strings.getKey('sidebar/material/export'))
-  exportJson.setMarginLeft('120px')
-  exportJson.onClick(function () {
-    const object = editor.selected
-    const material = object.material
-
-    let output = material.toJSON()
-
-    try {
-      output = JSON.stringify(output, null, '\t')
-      output = output.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1')
-    } catch (e) {
-      output = JSON.stringify(output)
-    }
-
-    const left = (screen.width - 500) / 2
-    const top = (screen.height - 500) / 2
-
-    const url = URL.createObjectURL(new Blob([output], { type: 'text/plain' }))
-    window.open(url, '_blank', `location=no,left=${left},top=${top},width=500,height=500`)
-  })
-  container.add(exportJson)
-
   //
 
   function update () {
@@ -439,10 +377,6 @@ function SidebarMaterial (editor) {
     let material = editor.getObjectMaterial(currentObject, currentMaterialSlot)
 
     if (material) {
-      if (material.uuid !== undefined && material.uuid !== materialUUID.getValue()) {
-        editor.execute(new SetMaterialValueCommand(editor, currentObject, 'uuid', materialUUID.getValue(), currentMaterialSlot))
-      }
-
       if (material.type !== materialClass.getValue()) {
         material = new materialClasses[materialClass.getValue()]()
 
@@ -465,15 +399,6 @@ function SidebarMaterial (editor) {
         // Also there should be means to create a unique
         // copy for the current object explicitly and to
         // attach the current material to other objects.
-      }
-
-      try {
-        const userData = JSON.parse(materialUserData.getValue())
-        if (JSON.stringify(material.userData) != JSON.stringify(userData)) {
-          editor.execute(new SetMaterialValueCommand(editor, currentObject, 'userData', userData, currentMaterialSlot))
-        }
-      } catch (exception) {
-        console.warn(exception)
       }
 
       refreshUI()
@@ -511,10 +436,6 @@ function SidebarMaterial (editor) {
 
     material = editor.getObjectMaterial(currentObject, currentMaterialSlot)
 
-    if (material.uuid !== undefined) {
-      materialUUID.setValue(material.uuid)
-    }
-
     if (material.name !== undefined) {
       materialName.setValue(material.name)
     }
@@ -532,15 +453,6 @@ function SidebarMaterial (editor) {
     materialClass.setValue(material.type)
 
     setRowVisibility()
-
-    try {
-      materialUserData.setValue(JSON.stringify(material.userData, null, '  '))
-    } catch (error) {
-      console.log(error)
-    }
-
-    materialUserData.setBorderColor('transparent')
-    materialUserData.setBackgroundColor('')
   }
 
   // events

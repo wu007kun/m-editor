@@ -1,10 +1,6 @@
 function Config () {
-  const name = 'threejs-editor'
-
   const storage = {
-    language: 'en',
-
-    autosave: true,
+    language: 'zh',
     'project/title': '',
     'project/editable': false,
     'project/vr': false,
@@ -21,16 +17,6 @@ function Config () {
     'settings/shortcuts/focus': 'f'
   }
 
-  if (window.localStorage[name] === undefined) {
-    window.localStorage[name] = JSON.stringify(storage)
-  } else {
-    const data = JSON.parse(window.localStorage[name])
-
-    for (const key in data) {
-      storage[key] = data[key]
-    }
-  }
-
   return {
 
     getKey: function (key) {
@@ -41,16 +27,7 @@ function Config () {
       for (let i = 0, l = arguments.length; i < l; i += 2) {
         storage[arguments[i]] = arguments[i + 1]
       }
-
-      window.localStorage[name] = JSON.stringify(storage)
-
-      console.log('[' + /\d\d\:\d\d\:\d\d/.exec(new Date())[0] + ']', 'Saved config to LocalStorage.')
-    },
-
-    clear: function () {
-      delete window.localStorage[name]
     }
-
   }
 }
 
