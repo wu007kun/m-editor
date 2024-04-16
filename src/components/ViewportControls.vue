@@ -7,15 +7,11 @@
 import { onMounted, watch } from 'vue'
 import { UIBoolean } from '@/editor/libs/ui.three'
 import { UISelect } from '@/editor/libs/ui'
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
+import { useMainStore } from '@/store'
+const store = useMainStore()
 
 onMounted(() => {
-  watch(() => props.editorReady, ready => {
+  watch(() => store.editorReady, ready => {
     if (ready) {
       init()
     }

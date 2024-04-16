@@ -1,33 +1,13 @@
 <template>
   <div id="sidebar">
-    <SidebarScene :editorReady="editorReady"/>
-    <SidebarProperties :editorReady="editorReady"/>
+    <SidebarScene />
+    <SidebarProperties />
   </div>
 </template>
 <script setup>
-import { onMounted, watch } from 'vue'
 import SidebarScene from './Sidebar/Scene.vue'
 import SidebarProperties from './Sidebar/Properties.vue'
-// import { SidebarProperties } from '@/editor/Sidebar/Sidebar.Properties.js'
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
 
-onMounted(() => {
-  watch(() => props.editorReady, ready => {
-    if (ready) {
-      const editor = window.editor
-      // const properties = new SidebarProperties(editor)
-      // const container = document.querySelector('#sidebar')
-      // container.appendChild(properties.dom)
-    }
-  }, {
-    immediate: true
-  })
-})
 </script>
 <style lang="less">
 #sidebar {
@@ -40,21 +20,5 @@ onMounted(() => {
   padding: 3px;
   box-sizing: border-box;
   display: flex; flex-direction: column;
-  .Panel {
-    padding: 10px;
-    border-top: 1px solid #ccc;
-    .collapsed {
-      margin-bottom: 0;
-    }
-  }
-  .Row {
-    display: flex;
-    align-items: center;
-    min-height: 24px;
-    margin-bottom: 10px;
-    .Label {
-      width: 120px;
-    }
-  }
 }
 </style>

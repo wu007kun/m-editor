@@ -1,16 +1,16 @@
 <template>
   <div class="home">
-    <Viewport :editorReady="editorReady"/>
-    <Toolbar :editorReady="editorReady"/>
-    <Sidebar :editorReady="editorReady"/>
-    <Menubar :editorReady="editorReady"/>
-    <Resizer :editorReady="editorReady"/>
+    <Viewport />
+    <Toolbar />
+    <Sidebar />
+    <Menubar />
+    <Resizer />
   </div>
 </template>
 
 <script setup>
-import '@/style/main.css'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
+import { useMainStore } from '@/store'
 import Viewport from '@/components/Viewport.vue'
 import Toolbar from '@/components/Toolbar.vue'
 import Sidebar from '@/components/Sidebar.vue'
@@ -21,8 +21,7 @@ import { Editor } from '../editor/Editor/Editor.js'
 window.URL = window.URL || window.webkitURL
 window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder
 
-const editorReady = ref(false)
-
+const mainStore = useMainStore()
 onMounted(() => {
   init()
 })
@@ -30,7 +29,7 @@ onMounted(() => {
 function init () {
   const editor = new Editor()
   window.editor = editor
-  editorReady.value = true
+  mainStore.setEditorReady()
   function onWindowResize () {
     editor.signals.windowResize.dispatch()
   }

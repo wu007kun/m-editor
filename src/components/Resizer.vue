@@ -3,16 +3,13 @@
 </template>
 <script setup>
 import { onMounted, watch } from 'vue'
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
+import { useMainStore } from '@/store'
+const store = useMainStore()
+
 let dom = null
 let signals = null
 onMounted(() => {
-  watch(() => props.editorReady, ready => {
+  watch(() => store.editorReady, ready => {
     if (ready) {
       const editor = window.editor
       signals = editor.signals
@@ -57,3 +54,14 @@ function onPointerMove (event) {
 }
 
 </script>
+<style>
+#resizer {
+  position: absolute;
+  top: 32px;
+  right: 345px;
+  width: 5px;
+  bottom: 0px;
+  cursor: col-resize;
+}
+
+</style>

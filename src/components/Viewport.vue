@@ -1,7 +1,7 @@
 <template>
   <div class="Panel" id="viewport">
-    <ViewportControls :editorReady="editorReady"/>
-    <ViewportInfo :editorReady="editorReady"/>
+    <ViewportControls />
+    <ViewportInfo />
     <div class="Panel"
       id="viewHelper"
       @pointerup="helperPointerUp"
@@ -17,16 +17,13 @@ import { EditorControls } from './Viewport/EditorControls.js'
 import { SetPositionCommand } from '@/editor/commands/SetPositionCommand.js'
 import { SetRotationCommand } from '@/editor/commands/SetRotationCommand.js'
 import { SetScaleCommand } from '@/editor/commands/SetScaleCommand.js'
+import { useMainStore } from '@/store'
+const store = useMainStore()
 
 const { RoomEnvironment, TransformControls } = THREE
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
+
 onMounted(() => {
-  watch(() => props.editorReady, ready => {
+  watch(() => store.editorReady, ready => {
     if (ready) {
       init()
     }
@@ -55,15 +52,15 @@ function init () {
 
   const grid = new THREE.Group()
 
-  const grid1 = new THREE.GridHelper(30, 30, 0x888888)
-  grid1.material.color.setHex(0x888888)
+  const grid1 = new THREE.GridHelper(300, 300, 0x4C4C4C)
+  grid1.material.color.setHex(0x4C4C4C)
   grid1.material.vertexColors = false
   grid.add(grid1)
 
-  const grid2 = new THREE.GridHelper(30, 6, 0x222222)
-  grid2.material.color.setHex(0x222222)
-  grid2.material.vertexColors = false
-  grid.add(grid2)
+  // const grid2 = new THREE.GridHelper(30, 6, 0x222222)
+  // grid2.material.color.setHex(0x222222)
+  // grid2.material.vertexColors = false
+  // grid.add(grid2)
 
   viewHelper = new THREE.ViewHelper(camera, container)
 
@@ -548,6 +545,10 @@ function init () {
 <style lang="less">
 #viewport {
   position: absolute;
+  top: 32px;
+  left: 0;
+  right: 350px;
+  bottom: 0;
   #viewHelper {
     position: absolute; right: 0; bottom: 0;
     width: 128px; height: 128px;

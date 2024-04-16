@@ -31,13 +31,8 @@
 </template>
 <script setup>
 import { onMounted, watch, reactive, ref } from 'vue'
-
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
+import { useMainStore } from '@/store'
+const store = useMainStore()
 const nodeStates = reactive(new Map())
 const parentData = new Map()
 let editor = null
@@ -45,7 +40,7 @@ let signals = null
 const listOptions = reactive([])
 const activeId = ref(-1)
 onMounted(() => {
-  watch(() => props.editorReady, ready => {
+  watch(() => store.editorReady, ready => {
     if (ready) {
       editor = window.editor
       signals = editor.signals

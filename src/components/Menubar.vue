@@ -8,15 +8,11 @@ import { onMounted, watch } from 'vue'
 import { MenubarAdd } from '@/editor/Menubar/Menubar.Add.js'
 import { MenubarEdit } from '@/editor/Menubar/Menubar.Edit.js'
 import { MenubarFile } from '@/editor/Menubar/Menubar.File.js'
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
+import { useMainStore } from '@/store'
+const store = useMainStore()
 
 onMounted(() => {
-  watch(() => props.editorReady, ready => {
+  watch(() => store.editorReady, ready => {
     if (ready) {
       const editor = window.editor
       const add = new MenubarAdd(editor)

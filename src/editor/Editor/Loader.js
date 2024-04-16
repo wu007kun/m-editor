@@ -1,6 +1,5 @@
 import { AddObjectCommand } from '../commands/AddObjectCommand.js'
 import { SetSceneCommand } from '../commands/SetSceneCommand.js'
-import { formatNumber } from '@/utils'
 import { LoaderUtils } from './LoaderUtils.js'
 
 const { TGALoader, TDSLoader, Rhino3dmLoader, ThreeMFLoader, AMFLoader, ColladaLoader, DRACOLoader, FBXLoader, GLTFLoader, KTX2Loader, IFCLoader, MD2Loader, KMZLoader, MTLLoader, OBJLoader, XYZLoader, VRMLLoader, VTKLoader, VOXLoader, VOXMesh, SVGLoader, STLLoader, PLYLoader, LDrawLoader } = THREE
@@ -28,8 +27,6 @@ function Loader (editor) {
         const file = filesMap[url]
 
         if (file) {
-          console.log('Loading', url)
-
           return URL.createObjectURL(file)
         }
 
@@ -49,12 +46,6 @@ function Loader (editor) {
     const extension = filename.split('.').pop().toLowerCase()
 
     const reader = new FileReader()
-    reader.addEventListener('progress', function (event) {
-      const size = '(' + formatNumber(Math.floor(event.total / 1000)) + ' KB)'
-      const progress = Math.floor((event.loaded / event.total) * 100) + '%'
-
-      console.log('Loading', filename, size, progress)
-    })
 
     switch (extension) {
       case '3dm':
@@ -676,8 +667,6 @@ function Loader (editor) {
         const file = zip[url]
 
         if (file) {
-          console.log('Loading', url)
-
           const blob = new Blob([file.buffer], { type: 'application/octet-stream' })
           return URL.createObjectURL(blob)
         }

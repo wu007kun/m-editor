@@ -11,9 +11,9 @@
     "@tweenjs/tween.js": "^23.1.1",
     "dat.gui": "^0.7.9",
     "element-plus": "^2.6.3",
+    "pinia": "^2.1.7",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.4",
-    "vuex": "^4.1.0"
+    "vue-router": "^4.2.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

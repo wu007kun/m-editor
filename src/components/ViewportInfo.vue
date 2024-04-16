@@ -21,13 +21,9 @@
 <script setup>
 import { onMounted, watch, reactive } from 'vue'
 import { formatNumber } from '@/utils'
+import { useMainStore } from '@/store'
+const store = useMainStore()
 
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
 const statistics = reactive({
   object: '',
   vertices: '',
@@ -36,7 +32,7 @@ const statistics = reactive({
 })
 
 onMounted(() => {
-  watch(() => props.editorReady, ready => {
+  watch(() => store.editorReady, ready => {
     if (ready) {
       const editor = window.editor
       const signals = editor.signals
@@ -93,5 +89,7 @@ onMounted(() => {
   position: absolute;
   left: 10px; bottom: 20px;
   font-size: 12px; color: #ffffff;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
+  pointer-events: none;
 }
 </style>

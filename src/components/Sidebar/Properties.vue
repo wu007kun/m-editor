@@ -25,10 +25,10 @@
     </div>
     <div class="tab-panel">
       <div v-show="activeTab === 0" class="panel-content" ref="envRef">
-        <Background :editorReady="editorReady"/>
+        <Background />
       </div>
       <div v-show="activeTab === 1" class="panel-content" ref="meshRef">
-
+        <ObjectComp />
       </div>
       <div v-show="activeTab === 2" class="panel-content" ref="matRef">
 
@@ -38,27 +38,21 @@
 </template>
 <script setup>
 import { onMounted, watch, ref } from 'vue'
-import { SidebarObject } from '@/editor/Sidebar/Sidebar.Object.js'
 import { SidebarGeometry } from '@/editor/Sidebar/Sidebar.Geometry.js'
 import { SidebarMaterial } from '@/editor/Sidebar/Sidebar.Material.js'
 import Background from './Background.vue'
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
+import ObjectComp from './Object.vue'
+import { useMainStore } from '@/store'
+const store = useMainStore()
 
 const envRef = ref()
 const meshRef = ref()
 const matRef = ref()
 
 onMounted(() => {
-  watch(() => props.editorReady, ready => {
+  watch(() => store.editorReady, ready => {
     if (ready) {
       const editor = window.editor
-      // myRef.value.appendChild()
-      meshRef.value.appendChild(new SidebarObject(editor).dom)
       meshRef.value.appendChild(new SidebarGeometry(editor).dom)
       matRef.value.appendChild(new SidebarMaterial(editor).dom)
     }
@@ -113,4 +107,32 @@ function setActiveTab (n) {
     }
   }
 }
+.detail-form {
+  padding: 10px 20px; box-sizing: border-box;
+  .detail-form-group {
+    margin-bottom: 10px;
+    .detail-form-item {
+      height: 30px;
+      display: flex; align-items: center;
+      .label {
+        margin-right: 10px;
+        width: 80px; text-align: right;
+      }
+      .img-uploader {
+        width: 30px; height: 30px;
+        .image {
+          width: 30px; height: 30px;
+          background-size: contain;
+          background-position: left;
+          background-repeat: no-repeat;
+          background-image: url('@/assets/images/plus.png');
+          border: 1px dashed #999;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+
+}
+
 </style>

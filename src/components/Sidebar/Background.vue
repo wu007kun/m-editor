@@ -1,35 +1,37 @@
 <template>
-  <div ref="containerRef">
-    <div>
-      <span>背景色</span>
-      <el-color-picker v-model="backgroundColor" @change="onBackgroundChanged"/>
+  <div class="detail-form">
+    <div class="detail-form-group">
+      <div class="detail-form-item">
+        <span class="label">背景色</span>
+        <el-color-picker v-model="backgroundColor" @change="onBackgroundChanged"/>
+      </div>
     </div>
-    <div>
-      <span>环境光照</span>
-      <el-upload
-        class="avatar-uploader"
-        :auto-upload="false"
-        :show-file-list="false"
-        :on-change="onTextureChanged"
-      >
-        <img v-if="backgroundTexture" :src="backgroundTexture" class="avatar" />
-        <span class="empty" v-else>+</span>
-      </el-upload>
+    <div class="detail-form-group">
+      <div class="detail-form-item">
+        <span class="label">环境贴图</span>
+        <el-upload
+          class="img-uploader"
+          :auto-upload="false"
+          :show-file-list="false"
+          :on-change="onTextureChanged">
+          <div class="image"
+            :style="{
+            'background-image': `url(${backgroundTexture || uploadIcon })`
+          }"></div>
+        </el-upload>
+      </div>
     </div>
   </div>
 </template>
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-const props = defineProps({
-  editorReady: {
-    type: Boolean,
-    default: false
-  }
-})
-const containerRef = ref()
+import uploadIcon from '@/assets/images/plus.png'
+import { useMainStore } from '@/store'
+const store = useMainStore()
+
 let editor = null
 let signals = null
-const backgroundColor = ref('#aaa')
+const backgroundColor = ref('#3F3F3F')
 const backgroundTexture = ref('')
 
 function onTextureChanged (file, files) {
@@ -38,7 +40,7 @@ function onTextureChanged (file, files) {
 }
 
 onMounted(() => {
-  watch(() => props.editorReady, ready => {
+  watch(() => store.editorReady, ready => {
     if (ready) {
       editor = window.editor
       signals = editor.signals
@@ -61,23 +63,9 @@ function onEnvironmentChanged () {
     'Equirectangular',
     texture
   )
-  // if (scene.environment.mapping === THREE.EquirectangularReflectionMapping) {
-  //       environmentType.setValue('Equirectangular')
-  //       environmentEquirectangularTexture.setValue(scene.environment)
-  //     } else if (scene.environment.isRenderTargetTexture === true) {
-  //       environmentType.setValue('ModelViewer')
-  //     }
 }
 
 </script>
 <style lang="less">
-.avatar-uploader {
-  .avatar {
-    width: 40px; height: 30px;
-  }
-  .empty {
-    display: inline-block; width: 30px; height: 30px; background: #ff9;
-  }
 
-}
 </style>

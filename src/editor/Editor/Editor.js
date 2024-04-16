@@ -69,7 +69,7 @@ function Editor () {
 
   this.scene = new THREE.Scene()
   this.scene.name = 'Scene'
-
+  this.scene.background = new THREE.Color('#3f3f3f')
   this.sceneHelpers = new THREE.Scene()
   this.sceneHelpers.add(new THREE.HemisphereLight(0xffffff, 0x888888, 2))
 

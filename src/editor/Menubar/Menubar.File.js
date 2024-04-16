@@ -24,7 +24,7 @@ function MenubarFile (editor) {
   option.setClass('option')
   option.setTextContent(strings.getKey('menubar/file/new'))
   option.onClick(function () {
-    if (confirm('Any unsaved data will be lost. Are you sure?')) {
+    if (confirm('未保存的工作将丢弃，确认?')) {
       editor.clear()
     }
   })
