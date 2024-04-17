@@ -57,11 +57,6 @@ function init () {
   grid1.material.vertexColors = false
   grid.add(grid1)
 
-  // const grid2 = new THREE.GridHelper(30, 6, 0x222222)
-  // grid2.material.color.setHex(0x222222)
-  // grid2.material.vertexColors = false
-  // grid.add(grid2)
-
   viewHelper = new THREE.ViewHelper(camera, container)
 
   renderer.setPixelRatio(window.devicePixelRatio)

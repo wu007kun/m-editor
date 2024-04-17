@@ -1,5 +1,5 @@
 <template>
-  <div class="detail-form">
+  <div class="detail-form" v-show="containerVisible">
     <div class="detail-form-group">
       <div class="detail-form-item">
         <span class="label">显示</span>
@@ -48,6 +48,16 @@
         <NumberInput v-model="scale.z" @update:model-value="update" />
       </div>
     </div>
+    <div class="detail-form-group" v-if="isLight">
+      <div class="detail-form-item">
+        <span class="label">光强</span>
+        <NumberInput v-model="light.intensity" @update:model-value="update" />
+      </div>
+      <div class="detail-form-item">
+        <span class="label">颜色</span>
+        <el-color-picker v-model="light.color" @change="update"/>
+      </div>
+    </div>
   </div>
 </template>
 <script setup>
@@ -57,6 +67,7 @@ import { SetPositionCommand } from '@/editor/commands/SetPositionCommand.js'
 import { SetRotationCommand } from '@/editor/commands/SetRotationCommand.js'
 import { SetScaleCommand } from '@/editor/commands/SetScaleCommand.js'
 import { SetValueCommand } from '@/editor/commands/SetValueCommand.js'
+import { SetColorCommand } from '@/editor/commands/SetColorCommand.js'
 import NumberInput from '../NumberInput.vue'
 const store = useMainStore()
 
@@ -75,7 +86,12 @@ const rotate = reactive({
 const scale = reactive({
   x: 0, y: 0, z: 0
 })
+const light = reactive({
+  intensity: 1,
+  color: '#fff'
+})
 
+const isLight = ref(false)
 function update () {
   const object = editor.selected
   const newPosition = new THREE.Vector3(translate.x, translate.y, translate.z)
@@ -100,6 +116,16 @@ function update () {
   if (object.visible !== visible.value) {
     editor.execute(new SetValueCommand(editor, object, 'visible', visible.value))
   }
+
+  if (isLight.value) {
+    if (object.intensity !== undefined && Math.abs(object.intensity - light.intensity) >= 0.01) {
+      editor.execute(new SetValueCommand(editor, object, 'intensity', light.intensity))
+    }
+    const color = new THREE.Color(light.color)
+    if (object.color !== undefined && object.color.getHex() !== color.getHex()) {
+      editor.execute(new SetColorCommand(editor, object, 'color', color.getHex()))
+    }
+  }
 }
 
 function updateUI (object) {
@@ -114,8 +140,10 @@ function updateUI (object) {
   scale.y = object.scale.y.toFixed(2) - 0
   scale.z = object.scale.z.toFixed(2) - 0
   visible.value = object.visible
-  // 处理灯光
-  // updateTransformRows(object)
+  if (isLight.value) {
+    light.intensity = object.intensity
+    light.color = '#' + object.color.getHexString()
+  }
 }
 
 onMounted(() => {
@@ -126,6 +154,8 @@ onMounted(() => {
       signals.objectSelected.add((object) => {
         if (object !== null) {
           containerVisible.value = true
+          console.log(object)
+          isLight.value = object.isLight
           updateUI(object)
         } else {
           containerVisible.value = false
@@ -134,7 +164,6 @@ onMounted(() => {
 
       signals.objectChanged.add((object) => {
         if (object !== editor.selected) return
-        console.log('what?')
         updateUI(object)
       })
 
