@@ -48,7 +48,7 @@
         <NumberInput v-model="scale.z" @update:model-value="update" />
       </div>
     </div>
-    <div class="detail-form-group" v-if="isLight">
+    <div class="detail-form-group" v-if="objectType === 'light'">
       <div class="detail-form-item">
         <span class="label">光强</span>
         <NumberInput v-model="light.intensity" @update:model-value="update" />
@@ -56,6 +56,16 @@
       <div class="detail-form-item">
         <span class="label">颜色</span>
         <el-color-picker v-model="light.color" @change="update"/>
+      </div>
+    </div>
+    <div class="detail-form-group" v-else-if="objectType === 'mesh'">
+      <div class="detail-form-item">
+        <span class="label">顶点数</span>
+        <span>{{ meshStatistics.vertices }}</span>
+      </div>
+      <div class="detail-form-item">
+        <span class="label">三角面数</span>
+        <span>{{ meshStatistics.triangles }}</span>
       </div>
     </div>
   </div>
@@ -90,8 +100,12 @@ const light = reactive({
   intensity: 1,
   color: '#fff'
 })
+const meshStatistics = reactive({
+  triangles: 0,
+  vertices: 0
+})
 
-const isLight = ref(false)
+const objectType = ref('')
 function update () {
   const object = editor.selected
   const newPosition = new THREE.Vector3(translate.x, translate.y, translate.z)
@@ -117,7 +131,7 @@ function update () {
     editor.execute(new SetValueCommand(editor, object, 'visible', visible.value))
   }
 
-  if (isLight.value) {
+  if (objectType.value === 'light') {
     if (object.intensity !== undefined && Math.abs(object.intensity - light.intensity) >= 0.01) {
       editor.execute(new SetValueCommand(editor, object, 'intensity', light.intensity))
     }
@@ -140,9 +154,12 @@ function updateUI (object) {
   scale.y = object.scale.y.toFixed(2) - 0
   scale.z = object.scale.z.toFixed(2) - 0
   visible.value = object.visible
-  if (isLight.value) {
+  if (objectType.value === 'light') {
     light.intensity = object.intensity
     light.color = '#' + object.color.getHexString()
+  } else if (objectType.value === 'mesh') {
+    meshStatistics.vertices = object.geometry.attributes.position.count
+    meshStatistics.triangles = object.geometry.index.count / 3
   }
 }
 
@@ -155,7 +172,13 @@ onMounted(() => {
         if (object !== null) {
           containerVisible.value = true
           console.log(object)
-          isLight.value = object.isLight
+          if (object.isLight) {
+            objectType.value = 'light'
+          } else if (object.isMesh) {
+            objectType.value = 'mesh'
+          } else {
+            objectType.value = ''
+          }
           updateUI(object)
         } else {
           containerVisible.value = false

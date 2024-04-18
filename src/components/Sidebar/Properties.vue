@@ -24,10 +24,10 @@
       </div>
     </div>
     <div class="tab-panel">
-      <div v-show="activeTab === 0" class="panel-content" ref="envRef">
+      <div v-show="activeTab === 0" class="panel-content">
         <Background />
       </div>
-      <div v-show="activeTab === 1" class="panel-content" ref="meshRef">
+      <div v-show="activeTab === 1" class="panel-content">
         <ObjectComp />
       </div>
       <div v-show="activeTab === 2" class="panel-content" ref="matRef">
@@ -38,22 +38,17 @@
 </template>
 <script setup>
 import { onMounted, watch, ref } from 'vue'
-import { SidebarGeometry } from '@/editor/Sidebar/Sidebar.Geometry.js'
 import { SidebarMaterial } from '@/editor/Sidebar/Sidebar.Material.js'
 import Background from './Background.vue'
 import ObjectComp from './Object.vue'
 import { useMainStore } from '@/store'
 const store = useMainStore()
-
-const envRef = ref()
-const meshRef = ref()
 const matRef = ref()
 
 onMounted(() => {
   watch(() => store.editorReady, ready => {
     if (ready) {
       const editor = window.editor
-      meshRef.value.appendChild(new SidebarGeometry(editor).dom)
       matRef.value.appendChild(new SidebarMaterial(editor).dom)
     }
   }, {
