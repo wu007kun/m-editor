@@ -1,8 +1,8 @@
 <template>
-  <div class="Panel" id="viewport">
+  <div id="viewport">
     <ViewportControls />
     <ViewportInfo />
-    <div class="Panel"
+    <div
       id="viewHelper"
       @pointerup="helperPointerUp"
       @pointerdown="helperPointerDown"></div>

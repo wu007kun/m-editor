@@ -1,5 +1,5 @@
 <template>
-  <div class="Panel viewport-controls" id="viewportControls">
+  <div class="viewport-controls" id="viewportControls">
 
   </div>
 </template>

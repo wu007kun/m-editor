@@ -1,5 +1,5 @@
 <template>
-  <div class="Panel" id="toolbar">
+  <div id="toolbar">
     <button
       :class="{
         selected: activeMode === 'translate'
@@ -99,10 +99,11 @@ onMounted(() => {
     position: relative;
     width: 100%;
     height: 36px;
-    cursor: pointer;
     input {
       margin: 0; padding: 0; outline: none;
       width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
     }
     .img-container {
       line-height: 36px;

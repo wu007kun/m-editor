@@ -41,6 +41,7 @@ function init () {
 <style lang='less'>
 .home {
   height: 100%;
+  user-select: none;
 }
 .function-list {
   position: absolute;

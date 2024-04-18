@@ -1,5 +1,5 @@
 <template>
-  <div class="Panel" id="info">
+  <div id="info">
     <p class="info-line">
       <span class="label">物体</span>
       <span class="value">{{ statistics.object }}</span>

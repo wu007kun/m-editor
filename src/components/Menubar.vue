@@ -1,32 +1,14 @@
 <template>
   <div id="menubar">
-
+    <MenubarFile />
+    <MenubarEdit />
+    <MenubarAdd />
   </div>
 </template>
 <script setup>
-import { onMounted, watch } from 'vue'
-import { MenubarAdd } from '@/editor/Menubar/Menubar.Add.js'
-import { MenubarEdit } from '@/editor/Menubar/Menubar.Edit.js'
-import { MenubarFile } from '@/editor/Menubar/Menubar.File.js'
-import { useMainStore } from '@/store'
-const store = useMainStore()
-
-onMounted(() => {
-  watch(() => store.editorReady, ready => {
-    if (ready) {
-      const editor = window.editor
-      const add = new MenubarAdd(editor)
-      const edit = new MenubarEdit(editor)
-      const file = new MenubarFile(editor)
-      const container = document.querySelector('#menubar')
-      container.appendChild(file.dom)
-      container.appendChild(edit.dom)
-      container.appendChild(add.dom)
-    }
-  }, {
-    immediate: true
-  })
-})
+import MenubarAdd from './Menubar/Add.vue'
+import MenubarEdit from './Menubar/Edit.vue'
+import MenubarFile from './Menubar/File.vue'
 </script>
 <style lang="less">
 #menubar {
@@ -76,15 +58,18 @@ onMounted(() => {
         margin: 0 !important;
         &:hover {
           color: #fff;
-          background-color: #08f;
+          background-color: #3F3F3F;
         }
         &:active {
           color: #666;
           background: transparent;
         }
       }
+      .underlined {
+        border-bottom: 1px solid #333;
+      }
       .inactive {
-        color: #bbb;
+        color: #777;
         background-color: transparent;
         padding: 5px 10px;
         margin: 0 !important;

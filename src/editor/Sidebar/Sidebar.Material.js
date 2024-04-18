@@ -1,4 +1,4 @@
-import { UIInput, UIPanel, UIRow, UISelect, UIText } from '../libs/ui.js'
+import { UIInput, UIDiv, UIRow, UISelect, UIText } from '../libs/ui.js'
 
 import { SetMaterialCommand } from '../commands/SetMaterialCommand.js'
 import { SetMaterialValueCommand } from '../commands/SetMaterialValueCommand.js'
@@ -19,10 +19,9 @@ function SidebarMaterial (editor) {
 
   let currentMaterialSlot = 0
 
-  const container = new UIPanel()
-  container.setBorderTop('0')
+  const container = new UIDiv()
   container.setDisplay('none')
-  container.setPaddingTop('20px')
+  container.setClass('detail-form')
 
   // Current material slot
 
