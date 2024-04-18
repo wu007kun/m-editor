@@ -64,7 +64,7 @@ function setActiveTab (n) {
 <style lang="less">
 .sidebar-properties {
   flex-grow: 1; flex-shrink: 1;
-  height: 300px;
+  height: 400px;
   display: flex;
   margin-top: 3px;
   border-radius: 4px;

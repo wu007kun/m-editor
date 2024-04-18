@@ -191,7 +191,7 @@ function handleListKeyUp (e) {
   border-radius: 4px;
   padding: 0;
   width: 100%;
-  height: 180px;
+  height: 400px;
   font-size: 12px;
   cursor: default;
   overflow: auto;
