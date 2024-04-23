@@ -134,24 +134,9 @@ class UISpan extends UIElement {
 }
 
 class UIDiv extends UIElement {
-  constructor () {
+  constructor (className) {
     super(document.createElement('div'))
-  }
-}
-
-class UIRow extends UIDiv {
-  constructor () {
-    super()
-
-    this.dom.className = 'Row'
-  }
-}
-
-class UIPanel extends UIDiv {
-  constructor () {
-    super()
-
-    this.dom.className = 'Panel'
+    this.dom.className = className
   }
 }
 
@@ -182,54 +167,12 @@ class UIText extends UISpan {
 class UIInput extends UIElement {
   constructor (text) {
     super(document.createElement('input'))
-
-    this.dom.className = 'Input'
-    this.dom.style.padding = '2px'
-    this.dom.style.border = '1px solid transparent'
-
+    this.dom.className = 'text-input'
     this.dom.setAttribute('autocomplete', 'off')
-
     this.dom.addEventListener('keydown', function (event) {
       event.stopPropagation()
     })
-
     this.setValue(text)
-  }
-
-  getValue () {
-    return this.dom.value
-  }
-
-  setValue (value) {
-    this.dom.value = value
-
-    return this
-  }
-}
-
-class UITextArea extends UIElement {
-  constructor () {
-    super(document.createElement('textarea'))
-
-    this.dom.className = 'TextArea'
-    this.dom.style.padding = '2px'
-    this.dom.spellcheck = false
-
-    this.dom.setAttribute('autocomplete', 'off')
-
-    this.dom.addEventListener('keydown', function (event) {
-      event.stopPropagation()
-
-      if (event.keyCode === 9) {
-        event.preventDefault()
-
-        const cursor = this.selectionStart
-
-        this.value = this.value.substring(0, cursor) + '\t' + this.value.substring(cursor)
-        this.selectionStart = cursor + 1
-        this.selectionEnd = this.selectionStart
-      }
-    })
   }
 
   getValue () {
@@ -370,8 +313,7 @@ class UINumber extends UIElement {
   constructor (number) {
     super(document.createElement('input'))
 
-    this.dom.style.cursor = 'ns-resize'
-    this.dom.className = 'Number'
+    this.dom.style.cursor = 'ew-resize'
     this.dom.value = '0.00'
 
     this.dom.setAttribute('autocomplete', 'off')
@@ -497,11 +439,6 @@ class UINumber extends UIElement {
       scope.dom.style.cursor = ''
     }
 
-    function onBlur () {
-      scope.dom.style.backgroundColor = 'transparent'
-      scope.dom.style.cursor = 'ns-resize'
-    }
-
     function onKeyDown (event) {
       event.stopPropagation()
 
@@ -524,14 +461,14 @@ class UINumber extends UIElement {
       }
     }
 
-    onBlur()
+    // onBlur()
 
     this.dom.addEventListener('keydown', onKeyDown)
     this.dom.addEventListener('mousedown', onMouseDown)
     this.dom.addEventListener('touchstart', onTouchStart, { passive: false })
     this.dom.addEventListener('change', onChange)
     this.dom.addEventListener('focus', onFocus)
-    this.dom.addEventListener('blur', onBlur)
+    // this.dom.addEventListener('blur', onBlur)
   }
 
   getValue () {
@@ -586,186 +523,4 @@ class UINumber extends UIElement {
   }
 }
 
-class UIInteger extends UIElement {
-  constructor (number) {
-    super(document.createElement('input'))
-
-    this.dom.style.cursor = 'ns-resize'
-    this.dom.className = 'Number'
-    this.dom.value = '0'
-
-    this.dom.setAttribute('autocomplete', 'off')
-
-    this.value = 0
-
-    this.min = -Infinity
-    this.max = Infinity
-
-    this.step = 1
-    this.nudge = 1
-
-    this.setValue(number)
-
-    const scope = this
-
-    const changeEvent = document.createEvent('HTMLEvents')
-    changeEvent.initEvent('change', true, true)
-
-    let distance = 0
-    let onMouseDownValue = 0
-
-    const pointer = { x: 0, y: 0 }
-    const prevPointer = { x: 0, y: 0 }
-
-    function onMouseDown (event) {
-      if (document.activeElement === scope.dom) return
-
-      event.preventDefault()
-
-      distance = 0
-
-      onMouseDownValue = scope.value
-
-      prevPointer.x = event.clientX
-      prevPointer.y = event.clientY
-
-      document.addEventListener('mousemove', onMouseMove)
-      document.addEventListener('mouseup', onMouseUp)
-    }
-
-    function onMouseMove (event) {
-      const currentValue = scope.value
-
-      pointer.x = event.clientX
-      pointer.y = event.clientY
-
-      distance += (pointer.x - prevPointer.x) - (pointer.y - prevPointer.y)
-
-      let value = onMouseDownValue + (distance / (event.shiftKey ? 5 : 50)) * scope.step
-      value = Math.min(scope.max, Math.max(scope.min, value)) | 0
-
-      if (currentValue !== value) {
-        scope.setValue(value)
-        scope.dom.dispatchEvent(changeEvent)
-      }
-
-      prevPointer.x = event.clientX
-      prevPointer.y = event.clientY
-    }
-
-    function onMouseUp () {
-      document.removeEventListener('mousemove', onMouseMove)
-      document.removeEventListener('mouseup', onMouseUp)
-
-      if (Math.abs(distance) < 2) {
-        scope.dom.focus()
-        scope.dom.select()
-      }
-    }
-
-    function onChange () {
-      scope.setValue(scope.dom.value)
-    }
-
-    function onFocus () {
-      scope.dom.style.backgroundColor = ''
-      scope.dom.style.cursor = ''
-    }
-
-    function onBlur () {
-      scope.dom.style.backgroundColor = 'transparent'
-      scope.dom.style.cursor = 'ns-resize'
-    }
-
-    function onKeyDown (event) {
-      event.stopPropagation()
-
-      switch (event.keyCode) {
-        case 13: // enter
-          scope.dom.blur()
-          break
-
-        case 38: // up
-          event.preventDefault()
-          scope.setValue(scope.getValue() + scope.nudge)
-          scope.dom.dispatchEvent(changeEvent)
-          break
-
-        case 40: // down
-          event.preventDefault()
-          scope.setValue(scope.getValue() - scope.nudge)
-          scope.dom.dispatchEvent(changeEvent)
-          break
-      }
-    }
-
-    onBlur()
-
-    this.dom.addEventListener('keydown', onKeyDown)
-    this.dom.addEventListener('mousedown', onMouseDown)
-    this.dom.addEventListener('change', onChange)
-    this.dom.addEventListener('focus', onFocus)
-    this.dom.addEventListener('blur', onBlur)
-  }
-
-  getValue () {
-    return this.value
-  }
-
-  setValue (value) {
-    if (value !== undefined) {
-      value = parseInt(value)
-
-      this.value = value
-      this.dom.value = value
-    }
-
-    return this
-  }
-
-  setStep (step) {
-    this.step = parseInt(step)
-
-    return this
-  }
-
-  setNudge (nudge) {
-    this.nudge = nudge
-
-    return this
-  }
-
-  setRange (min, max) {
-    this.min = min
-    this.max = max
-
-    return this
-  }
-}
-
-class UIBreak extends UIElement {
-  constructor () {
-    super(document.createElement('br'))
-
-    this.dom.className = 'Break'
-  }
-}
-
-class UIHorizontalRule extends UIElement {
-  constructor () {
-    super(document.createElement('hr'))
-
-    this.dom.className = 'HorizontalRule'
-  }
-}
-
-class UIButton extends UIElement {
-  constructor (value) {
-    super(document.createElement('button'))
-
-    this.dom.className = 'Button'
-    this.dom.textContent = value
-  }
-}
-
-export { UIElement, UISpan, UIDiv, UIRow, UIPanel, UIText, UIInput, UITextArea, UISelect, UICheckbox, UIColor, UINumber, UIInteger, UIBreak, UIHorizontalRule, UIButton }
+export { UIElement, UISpan, UIDiv, UIText, UIInput, UISelect, UICheckbox, UIColor, UINumber }

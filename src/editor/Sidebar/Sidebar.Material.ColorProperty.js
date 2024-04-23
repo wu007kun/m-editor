@@ -1,12 +1,12 @@
-import { UIColor, UINumber, UIRow, UIText } from '../libs/ui.js'
+import { UIColor, UINumber, UIDiv, UIText } from '../libs/ui.js'
 import { SetMaterialColorCommand } from '../commands/SetMaterialColorCommand.js'
 import { SetMaterialValueCommand } from '../commands/SetMaterialValueCommand.js'
 
 function SidebarMaterialColorProperty (editor, property, name) {
   const signals = editor.signals
 
-  const container = new UIRow()
-  container.add(new UIText(name).setClass('Label'))
+  const container = new UIDiv('detail-form-item')
+  container.add(new UIText(name).setClass('label'))
 
   const color = new UIColor().onInput(onChange)
   container.add(color)

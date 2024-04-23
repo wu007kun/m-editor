@@ -977,7 +977,7 @@ function Strings (config) {
       'sidebar/material/sheenroughnessmap': 'Sheen Rough. Map',
       'sidebar/material/envmap': '环境贴图',
       'sidebar/material/lightmap': '光照贴图',
-      'sidebar/material/aomap': '环境光遮蔽贴图',
+      'sidebar/material/aomap': 'AO贴图',
       'sidebar/material/emissivemap': '自发光贴图',
       'sidebar/material/gradientmap': '渐变贴图',
       'sidebar/material/transmissionmap': '透光贴图',

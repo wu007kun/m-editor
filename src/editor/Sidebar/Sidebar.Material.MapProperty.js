@@ -1,15 +1,14 @@
-import { UICheckbox, UIDiv, UINumber, UIRow, UIText } from '../libs/ui.js'
+import { UICheckbox, UIDiv, UINumber, UIText } from '../libs/ui.js'
 import { UITexture } from '../libs/ui.three.js'
 import { SetMaterialMapCommand } from '../commands/SetMaterialMapCommand.js'
 import { SetMaterialValueCommand } from '../commands/SetMaterialValueCommand.js'
-import { SetMaterialRangeCommand } from '../commands/SetMaterialRangeCommand.js'
 import { SetMaterialVectorCommand } from '../commands/SetMaterialVectorCommand.js'
 
 function SidebarMaterialMapProperty (editor, property, name) {
   const signals = editor.signals
 
-  const container = new UIRow()
-  container.add(new UIText(name).setClass('Label'))
+  const container = new UIDiv('detail-form-item')
+  container.add(new UIText(name).setClass('label'))
 
   const enabled = new UICheckbox(false).setMarginRight('8px').onChange(onChange)
   container.add(enabled)
@@ -24,54 +23,28 @@ function SidebarMaterialMapProperty (editor, property, name) {
   let intensity
 
   if (property === 'aoMap') {
-    intensity = new UINumber(1).setWidth('30px').setRange(0, 1).onChange(onIntensityChange)
+    intensity = new UINumber(1).setClass('number-input').setWidth('40px').setMarginRight('4px').setRange(0, 1).onChange(onIntensityChange)
     container.add(intensity)
   }
 
   let scale
 
   if (property === 'bumpMap' || property === 'displacementMap') {
-    scale = new UINumber().setWidth('30px').onChange(onScaleChange)
+    scale = new UINumber().setClass('number-input').setWidth('40px').setMarginRight('4px').onChange(onScaleChange)
     container.add(scale)
   }
 
   let scaleX, scaleY
 
   if (property === 'normalMap' || property === 'clearcoatNormalMap') {
-    scaleX = new UINumber().setWidth('30px').onChange(onScaleXYChange)
+    scaleX = new UINumber().setClass('number-input').setWidth('40px').setMarginRight('4px').onChange(onScaleXYChange)
     container.add(scaleX)
 
-    scaleY = new UINumber().setWidth('30px').onChange(onScaleXYChange)
+    scaleY = new UINumber().setClass('number-input').setWidth('40px').setMarginRight('4px').onChange(onScaleXYChange)
     container.add(scaleY)
   }
 
   let rangeMin, rangeMax
-
-  if (property === 'iridescenceThicknessMap') {
-    const range = new UIDiv().setMarginLeft('3px')
-    container.add(range)
-
-    const rangeMinRow = new UIRow().setMarginBottom('0px').setStyle('min-height', '0px')
-    range.add(rangeMinRow)
-
-    rangeMinRow.add(new UIText('min:').setWidth('35px'))
-
-    rangeMin = new UINumber().setWidth('40px').onChange(onRangeChange)
-    rangeMinRow.add(rangeMin)
-
-    const rangeMaxRow = new UIRow().setMarginBottom('6px').setStyle('min-height', '0px')
-    range.add(rangeMaxRow)
-
-    rangeMaxRow.add(new UIText('max:').setWidth('35px'))
-
-    rangeMax = new UINumber().setWidth('40px').onChange(onRangeChange)
-    rangeMaxRow.add(rangeMax)
-
-    // Additional settings for iridescenceThicknessMap
-    // Please add conditional if more maps are having a range property
-    rangeMin.setPrecision(0).setRange(0, Infinity).setNudge(1).setStep(10).setUnit('nm')
-    rangeMax.setPrecision(0).setRange(0, Infinity).setNudge(1).setStep(10).setUnit('nm')
-  }
 
   let object = null
   let materialSlot = null
@@ -123,14 +96,6 @@ function SidebarMaterialMapProperty (editor, property, name) {
 
     if (material[`${mapType}Scale`].x !== value[0] || material[`${mapType}Scale`].y !== value[1]) {
       editor.execute(new SetMaterialVectorCommand(editor, object, `${mapType}Scale`, value, materialSlot))
-    }
-  }
-
-  function onRangeChange () {
-    const value = [rangeMin.getValue(), rangeMax.getValue()]
-
-    if (material[`${mapType}Range`][0] !== value[0] || material[`${mapType}Range`][1] !== value[1]) {
-      editor.execute(new SetMaterialRangeCommand(editor, object, `${mapType}Range`, value[0], value[1], materialSlot))
     }
   }
 

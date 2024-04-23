@@ -108,10 +108,36 @@ function setActiveTab (n) {
     margin-bottom: 10px;
     .detail-form-item {
       height: 30px;
-      display: flex; align-items: center;
+      display: flex; align-items: center; align-content: center;
       .label {
         margin-right: 10px;
         width: 80px; text-align: right;
+      }
+      .text-input {
+        background-color: #545454;
+        text-align: center;
+        color: #D6D6D6;
+        outline: none;
+        border: none;
+        border-radius: 2px;
+        height: 24px;
+        padding: 0;
+        &:focus {
+          cursor: text;
+          background-color: #222222;
+          & ~ .arrow {
+            display: none;
+          }
+        }
+        &:active {
+          background-color: #292929;
+          & ~ .arrow {
+            background-color: #222222;
+          }
+        }
+        &:hover:not(:active):not(:focus) {
+          background-color: rgb(121, 121, 121);
+        }
       }
       .img-uploader {
         width: 30px; height: 30px;

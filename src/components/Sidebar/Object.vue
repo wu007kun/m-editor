@@ -201,27 +201,3 @@ onMounted(() => {
 })
 
 </script>
-<style lang="less">
-.detail-form {
-  padding: 10px 20px; box-sizing: border-box;
-}
-.detail-form-item {
-  height: 40px;
-  display: flex; align-items: center;
-  .label {
-    width: 80px;
-  }
-  .img-uploader {
-    width: 30px; height: 30px;
-    .image {
-      width: 30px; height: 30px;
-      background-size: contain;
-      background-position: left;
-      background-repeat: no-repeat;
-      background-image: url('@/assets/images/plus.png');
-      border: 1px dashed #999;
-      border-radius: 4px;
-    }
-  }
-}
-</style>

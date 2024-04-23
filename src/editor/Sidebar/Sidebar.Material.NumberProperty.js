@@ -1,13 +1,13 @@
-import { UINumber, UIRow, UIText } from '../libs/ui.js'
+import { UINumber, UIDiv, UIText } from '../libs/ui.js'
 import { SetMaterialValueCommand } from '../commands/SetMaterialValueCommand.js'
 
 function SidebarMaterialNumberProperty (editor, property, name, range = [-Infinity, Infinity]) {
   const signals = editor.signals
 
-  const container = new UIRow()
-  container.add(new UIText(name).setClass('Label'))
+  const container = new UIDiv('detail-form-item')
+  container.add(new UIText(name).setClass('label'))
 
-  const number = new UINumber().setWidth('60px').setRange(range[0], range[1]).onChange(onChange)
+  const number = new UINumber().setClass('number-input').setRange(range[0], range[1]).onChange(onChange)
   container.add(number)
 
   let object = null

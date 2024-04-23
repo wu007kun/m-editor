@@ -1,11 +1,11 @@
-import { UICheckbox, UIRow, UIText } from '../libs/ui.js'
+import { UICheckbox, UIDiv, UIText } from '../libs/ui.js'
 import { SetMaterialValueCommand } from '../commands/SetMaterialValueCommand.js'
 
 function SidebarMaterialBooleanProperty (editor, property, name) {
   const signals = editor.signals
 
-  const container = new UIRow()
-  container.add(new UIText(name).setClass('Label'))
+  const container = new UIDiv('detail-form-item')
+  container.add(new UIText(name).setClass('label'))
 
   const boolean = new UICheckbox().setLeft('100px').onChange(onChange)
   container.add(boolean)
