@@ -9,13 +9,13 @@
       <span class="value">{{ statistics.vertices }}</span>
     </p>
     <p class="info-line">
-      <span class="label">三角面</span>
+      <span class="label">三角形</span>
       <span class="value">{{ statistics.triangles }}</span>
     </p>
-    <p class="info-line">
+    <!-- <p class="info-line">
       <span class="label">渲染时间</span>
       <span class="value">{{ statistics.frametime }}</span>
-    </p>
+    </p> -->
   </div>
 </template>
 <script setup>
@@ -27,8 +27,8 @@ const store = useMainStore()
 const statistics = reactive({
   object: '',
   vertices: '',
-  triangles: '',
-  frametime: ''
+  triangles: ''
+  // frametime: ''
 })
 
 onMounted(() => {
@@ -39,7 +39,7 @@ onMounted(() => {
       signals.objectAdded.add(update)
       signals.objectRemoved.add(update)
       signals.geometryChanged.add(update)
-      signals.sceneRendered.add(updateFrametime)
+      // signals.sceneRendered.add(updateFrametime)
 
       //
 
@@ -74,9 +74,9 @@ onMounted(() => {
         statistics.triangles = formatNumber(triangles)
       }
 
-      function updateFrametime (frametime) {
-        statistics.frametime = Number(frametime).toFixed(2)
-      }
+      // function updateFrametime (frametime) {
+      //   statistics.frametime = Number(frametime).toFixed(2)
+      // }
     }
   }, {
     immediate: true
@@ -87,9 +87,16 @@ onMounted(() => {
 <style lang="less">
 #info {
   position: absolute;
-  left: 10px; bottom: 20px;
+  left: 65px; top: 20px;
   font-size: 12px; color: #ffffff;
   text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
   pointer-events: none;
+  .info-line {
+    margin: 0 0 5px 0;
+    .label {
+      display: inline-block;
+      width: 60px;
+    }
+  }
 }
 </style>

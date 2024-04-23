@@ -1043,7 +1043,7 @@ function Strings (config) {
       'toolbar/local': '本地',
 
       'viewport/controls/grid': '网格',
-      'viewport/controls/helpers': '辅助',
+      'viewport/controls/helpers': '辅助线',
 
       'viewport/info/objects': '物体',
       'viewport/info/vertices': '顶点',
