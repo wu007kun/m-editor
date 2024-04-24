@@ -3,6 +3,7 @@ import { Loader } from './Loader.js'
 import { History as _History } from './History.js'
 import { Strings } from './Strings.js'
 import { Selector } from '../Selector.js'
+import { RemoveObjectCommand } from '../commands/RemoveObjectCommand.js'
 
 function Editor () {
   const Signal = signals.Signal // eslint-disable-line no-undef
@@ -95,6 +96,49 @@ function Editor () {
   this.viewportShading = 'default'
 
   this.addCamera(this.camera)
+  const IS_MAC = navigator.userAgent.indexOf('Mac') !== -1
+  document.addEventListener('keydown', (event) => {
+    switch (event.key.toLowerCase()) {
+      case 'backspace':
+        event.preventDefault() // prevent browser back
+        // fall-through
+        break
+      case 'delete':
+        if (this.selected === null) return
+        if (this.selected.parent !== null) this.execute(new RemoveObjectCommand(this, this.selected))
+        break
+
+      case 'g':
+        this.signals.transformModeChanged.dispatch('translate')
+        break
+
+      case 'r':
+        this.signals.transformModeChanged.dispatch('rotate')
+        break
+
+      case 's':
+        this.signals.transformModeChanged.dispatch('scale')
+        break
+
+      case 'z':
+        if (IS_MAC ? event.metaKey : event.ctrlKey) {
+          event.preventDefault() // Prevent browser specific hotkeys
+          if (event.shiftKey) {
+            this.redo()
+          } else {
+            this.undo()
+          }
+        }
+
+        break
+
+      case 'f':
+        if (this.selected !== null) {
+          this.focus(this.selected)
+        }
+        break
+    }
+  })
 }
 
 Editor.prototype = {
