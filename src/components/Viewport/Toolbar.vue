@@ -1,5 +1,5 @@
 <template>
-  <div id="toolbar">
+  <div class="toolbar">
     <button
       :class="{
         selected: activeMode === 'translate'
@@ -67,11 +67,11 @@ onMounted(() => {
 
 </script>
 <style lang="less">
-#toolbar {
+.toolbar {
   --selected-color: #345688;
   position: absolute;
   left: 10px;
-  top: 42px;
+  top: 10px;
   width: 36px;
   text-align: center;
   button {

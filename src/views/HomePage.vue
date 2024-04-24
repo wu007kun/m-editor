@@ -1,7 +1,6 @@
 <template>
   <div class="home">
     <Viewport />
-    <Toolbar />
     <Sidebar />
     <Menubar />
     <Resizer />
@@ -12,7 +11,6 @@
 import { onMounted } from 'vue'
 import { useMainStore } from '@/store'
 import Viewport from '@/components/Viewport.vue'
-import Toolbar from '@/components/Toolbar.vue'
 import Sidebar from '@/components/Sidebar.vue'
 import Menubar from '@/components/Menubar.vue'
 import Resizer from '@/components/Resizer.vue'

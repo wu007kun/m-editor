@@ -1,18 +1,22 @@
 <template>
-  <div id="viewport">
+  <div class="viewport-container">
+    <div id="viewport">
+      <ViewportInfo />
+      <div
+        id="viewHelper"
+        @pointerup="helperPointerUp"
+        @pointerdown="helperPointerDown">
+      </div>
+    </div>
+    <Toolbar />
     <ViewportControls />
-    <ViewportInfo />
-    <div
-      id="viewHelper"
-      @pointerup="helperPointerUp"
-      @pointerdown="helperPointerDown"></div>
   </div>
 </template>
 <script setup>
 import { onMounted, watch } from 'vue'
-import ViewportControls from './ViewportControls.vue'
 import ViewportInfo from './ViewportInfo.vue'
-
+import Toolbar from '@/components/Viewport/Toolbar.vue'
+import ViewportControls from '@/components/Viewport/ViewportControls.vue'
 import { EditorControls } from './Viewport/EditorControls.js'
 import { SetPositionCommand } from '@/editor/commands/SetPositionCommand.js'
 import { SetRotationCommand } from '@/editor/commands/SetRotationCommand.js'
@@ -538,16 +542,18 @@ function init () {
 
 </script>
 <style lang="less">
-#viewport {
+.viewport-container {
   position: absolute;
   top: 32px;
   left: 0;
   right: 350px;
   bottom: 0;
-  #viewHelper {
-    position: absolute; right: 0; bottom: 0;
-    width: 128px; height: 128px;
+  #viewport {
+    width: 100%; height: 100%;
+    #viewHelper {
+      position: absolute; right: 0; bottom: 0;
+      width: 128px; height: 128px;
+    }
   }
 }
-
 </style>
