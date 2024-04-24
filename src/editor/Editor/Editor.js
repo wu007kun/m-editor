@@ -4,11 +4,6 @@ import { History as _History } from './History.js'
 import { Strings } from './Strings.js'
 import { Selector } from '../Selector.js'
 
-const _DEFAULT_CAMERA = new THREE.PerspectiveCamera(90, 1, 0.01, 1000)
-_DEFAULT_CAMERA.name = 'Camera'
-_DEFAULT_CAMERA.position.set(0, 5, 10)
-_DEFAULT_CAMERA.lookAt(new THREE.Vector3())
-
 function Editor () {
   const Signal = signals.Signal // eslint-disable-line no-undef
 
@@ -65,11 +60,19 @@ function Editor () {
 
   this.loader = new Loader(this)
 
-  this.camera = _DEFAULT_CAMERA.clone()
-
   this.scene = new THREE.Scene()
   this.scene.name = 'Scene'
   this.scene.background = new THREE.Color('#3f3f3f')
+
+  const container = document.getElementById('viewport')
+  const containerWidth = container.clientWidth
+  const containerHeight = container.clientHeight
+  const aspectRatio = containerWidth / containerHeight
+  this.camera = new THREE.PerspectiveCamera(50, aspectRatio, 0.01, 10000)
+  this.camera.name = 'Camera'
+  this.camera.position.set(0, 5, 10)
+  this.camera.lookAt(new THREE.Vector3())
+
   this.sceneHelpers = new THREE.Scene()
   this.sceneHelpers.add(new THREE.HemisphereLight(0xffffff, 0x888888, 2))
 
