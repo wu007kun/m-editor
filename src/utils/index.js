@@ -34,3 +34,18 @@ function animate () {
 export function formatNumber (input) {
   return input.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
+
+export function debounce (func, wait = 100, immediate = false) {
+  let timeout
+
+  return function executedFunction (...args) {
+    const later = () => {
+      timeout = null
+      if (!immediate) func.apply(this, args)
+    }
+    const callNow = immediate && !timeout
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+    if (callNow) func.apply(this, args)
+  }
+};

@@ -47,7 +47,6 @@ function setTransformMode (type) {
 
 const spaceCoord = ref(false)
 function setSpaceCoord () {
-  console.log('change!!!')
   signals.spaceChanged.dispatch(spaceCoord.value === true ? 'local' : 'world')
 }
 

@@ -22,6 +22,26 @@ const props = defineProps({
   modelValue: {
     type: Number,
     default: 0
+  },
+  max: {
+    type: Number,
+    default: Infinity
+  },
+  min: {
+    type: Number,
+    default: -Infinity
+  },
+  step: {
+    type: Number,
+    default: 0.1
+  },
+  nudge: {
+    type: Number,
+    default: 0.1
+  },
+  precision: {
+    type: Number,
+    default: 2
   }
 })
 const emit = defineEmits(['update:modelValue'])
@@ -29,13 +49,6 @@ function inputChange (e) {
   setValue(e.target.value)
 }
 const numberInput = ref()
-
-const min = -Infinity
-const max = Infinity
-
-const precision = 2
-const step = 1
-const nudge = 0.01
 let distance = 0
 let onMouseDownValue = 0
 
@@ -56,9 +69,9 @@ function onMouseMove (event) {
   pointer.x = event.clientX
   pointer.y = event.clientY
   distance += (pointer.x - prevPointer.x) - (pointer.y - prevPointer.y)
-  let value = onMouseDownValue + (distance / (event.shiftKey ? 5 : 50)) * step
-  value = Math.min(max, Math.max(min, value))
-  value = value.toFixed(precision) - 0
+  let value = onMouseDownValue + (distance * (event.shiftKey ? 5 : 0.5)) * props.step
+  value = Math.min(props.max, Math.max(props.min, value))
+  value = value.toFixed(props.precision) - 0
   setValue(value)
   prevPointer.x = event.clientX
   prevPointer.y = event.clientY
@@ -89,8 +102,8 @@ function onTouchMove (event) {
   pointer.x = event.touches[0].pageX
   pointer.y = event.touches[0].pageY
   distance += (pointer.x - prevPointer.x) - (pointer.y - prevPointer.y)
-  let value = onMouseDownValue + (distance / (event.shiftKey ? 5 : 50)) * step
-  value = Math.min(max, Math.max(min, value))
+  let value = onMouseDownValue + (distance / (event.shiftKey ? 5 : 50)) * props.step
+  value = Math.min(props.max, Math.max(props.min, value))
   setValue(value)
   prevPointer.x = event.touches[0].pageX
   prevPointer.y = event.touches[0].pageY
@@ -103,7 +116,7 @@ function onTouchEnd (event) {
   }
 }
 function changeByStep (multi) {
-  setValue(props.modelValue + nudge * multi)
+  setValue(props.modelValue + props.nudge * multi)
 }
 
 function onKeyDown (event) {
@@ -114,17 +127,17 @@ function onKeyDown (event) {
       break
     case 38: // up
       event.preventDefault()
-      setValue(props.modelValue + nudge)
+      setValue(props.modelValue + props.nudge)
       break
     case 40: // down
       event.preventDefault()
-      setValue(props.modelValue - nudge)
+      setValue(props.modelValue - props.nudge)
       break
   }
 }
 
 function setValue (value) {
-  emit('update:modelValue', value.toFixed(precision) - 0)
+  emit('update:modelValue', Number(value).toFixed(props.precision) - 0)
 }
 
 </script>

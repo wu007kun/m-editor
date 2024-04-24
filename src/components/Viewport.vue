@@ -292,6 +292,7 @@ function init () {
 
   signals.spaceChanged.add(function (space) {
     transformControls.setSpace(space)
+    render()
   })
 
   signals.rendererDetectKTX2Support.add(function (ktx2Loader) {

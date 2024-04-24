@@ -398,7 +398,7 @@ Editor.prototype = {
   clear: function () {
     this.history.clear()
 
-    this.camera.copy(_DEFAULT_CAMERA)
+    // this.camera.copy(_DEFAULT_CAMERA)
     this.signals.cameraResetted.dispatch()
 
     this.scene.name = 'Scene'
